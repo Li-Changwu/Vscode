@@ -119,8 +119,6 @@ $HOME、$PWD、$SHELL、$USER等
         echo $*
         echo '==========$@=========='
         echo $@
-        [root@chunis scripts]# ./var.sh a b c d e f g
-        -bash: ./var.sh: 权限不够
         [root@chunis scripts]# sh var.sh a b c d e f g
         ==========$n==========
         var.sh
