@@ -110,7 +110,9 @@ $HOME、$PWD、$SHELL、$USER等
     [root@chunis scripts]# cat var.sh
     #!/bin/bash
     echo '==========$n=========='
-    echo $0
+    # 命令替换：使用“$(系统命令)”调用系统命令
+    echo script name:$(basename $0 .sh)
+    echo scipt path:$(dirname $0) 
     echo $1
     echo $2
     echo '==========$#=========='
@@ -119,9 +121,10 @@ $HOME、$PWD、$SHELL、$USER等
     echo $*
     echo '==========$@=========='
     echo $@
-    [root@chunis scripts]# sh var.sh a b c d e f g
+    [root@chunis scripts]# ./var.sh a b c d e f g
     ==========$n==========
-    var.sh
+    script name:var
+    scipt path:.
     a
     b
     ==========$#==========
@@ -409,7 +412,70 @@ hello,lcw
 
 ## 8.函数
 
-function
+### 系统函数
+
+1. basename
+基本语法：basename [string / pathname] [suffix]
+功能描述：basename 命令会删掉所有的前缀包括最后一个（‘/’）字符，然后将字符串显示出来。basename 可以理解为取路径里的文件名称
+选项：
+suffix 为后缀，如果suffix 被指定了，basename 会将pathname 或string 中的suffix 去掉
+
+    ```shell
+    [root@hadoop100 scripts]# basename ./while.sh .sh
+    while
+    ```
+
+2. dirname
+基本语法：dirname 文件路径
+功能描述：从给定的包含路径的文件名中去除文件名
+（非目录的部分），然后返回剩下的路径（目录的部分），dirname 可以理解为取文件路径的路径名称
+
+    ```shell
+    [root@hadoop100 scripts]# dirname ./while.sh 
+    .
+    [root@hadoop100 scripts]# dirname /root/scripts/while.sh 
+    /root/scripts
+    ```
+
+### 自定义函数
+
+基本语法：
+
+```shell
+# 这里[]表示可以不写
+[ function ] funname[()]
+{
+    程序
+    [return int;]
+}
+```
+
+**注意**：
+（1）必须在调用函数地方之前，先声明函数，shell 脚本是逐行运行，不会像其它语言一样先编译。
+（2）函数返回值，只能通过$?系统变量获得，可以显示加return 返回，如果不加，将以最后一条命令运行结果，作为返回值，返回值范围为(0-255)。
+
+实例：
+
+```shell
+[root@hadoop100 scripts]# cat ./func.sh 
+#!/bin/bash
+
+function sum()
+{
+  sum=$[$1+$2]
+  echo $sum
+}
+
+read -p "请输入数字1:" num1
+read -p "请输入数字2:" num2
+
+sum=$(sum num1 num2)
+echo "$num1 + $num2 = $sum"
+[root@hadoop100 scripts]# ./func.sh
+请输入数字1:11
+请输入数字2:456
+11 + 456 = 467
+```
 
 ## 9.正则表达式入门
 
